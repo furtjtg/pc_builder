@@ -1,0 +1,784 @@
+/* ===== Базовые стили ===== */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+	background: #f5f7fa;
+	color: #2c3e50;
+	line-height: 1.5;
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	padding: 40px 16px;
+}
+
+/* ===== Контейнер ===== */
+.container {
+	width: 100%;
+	max-width: 860px;
+	background: #ffffff;
+	border-radius: 16px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+	padding: 40px;
+}
+
+/* ===== Заголовок ===== */
+.container h1 {
+	font-size: 28px;
+	font-weight: 600;
+	color: #1e293b;
+	margin-bottom: 8px;
+}
+
+.container > p {
+	color: #64748b;
+	margin-bottom: 32px;
+}
+
+/* ===== Сетка выбора компонентов (вертикальная) ===== */
+.config-grid {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	margin-bottom: 32px;
+	max-width: 640px;
+}
+
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.field label {
+	font-size: 14px;
+	font-weight: 500;
+	color: #334155;
+}
+
+.field-icon {
+	width: 15px;
+	height: 15px;
+	vertical-align: -2px;
+	margin-right: 4px;
+	color: #64748b;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.5;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+/* ===== Строка «комбобокс + количество» (RAM/SSD) ===== */
+.combobox-qty-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.combobox-qty-row .combobox {
+	flex: 1;
+	min-width: 0;
+}
+
+.qty-field {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex-shrink: 0;
+}
+
+.qty-field > span {
+	font-size: 12px;
+	font-weight: 500;
+	color: #64748b;
+	white-space: nowrap;
+}
+
+.qty-select {
+	width: 64px;
+	padding: 12px 6px;
+	border: 1px solid #d1d5db;
+	border-radius: 10px;
+	background: #f9fafb;
+	font-family: inherit;
+	font-size: 15px;
+	font-weight: 600;
+	color: #1e293b;
+	cursor: pointer;
+	transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.qty-select:hover {
+	border-color: #60a5fa;
+	background-color: #ffffff;
+}
+
+.qty-select:focus {
+	outline: none;
+	border-color: #4a90d9;
+	box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
+	background-color: #ffffff;
+}
+
+/* ===== Комбобокс с поиском ===== */
+.combobox {
+	position: relative;
+}
+
+.combobox-toggle {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	padding: 12px 14px;
+	border: 1px solid #d1d5db;
+	border-radius: 10px;
+	background: #f9fafb;
+	font-family: inherit;
+	font-size: 15px;
+	color: #1e293b;
+	cursor: pointer;
+	text-align: left;
+	transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.combobox-toggle:hover {
+	border-color: #60a5fa;
+	background-color: #ffffff;
+}
+
+.combobox-toggle:focus {
+	outline: none;
+	border-color: #4a90d9;
+	box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
+	background-color: #ffffff;
+}
+
+.combobox-value {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 0;
+}
+
+.combobox-value .toggle-price {
+	font-weight: 600;
+	color: #4a90d9;
+	white-space: nowrap;
+}
+
+.combobox-value .toggle-name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.combobox-value.placeholder {
+	color: #94a3b8;
+	font-style: italic;
+}
+
+.combobox-arrow {
+	color: #64748b;
+	font-size: 12px;
+	flex-shrink: 0;
+}
+
+.combobox-menu {
+	position: absolute;
+	top: calc(100% + 6px);
+	left: 0;
+	right: 0;
+	z-index: 50;
+	background: #ffffff;
+	border: 1px solid #d1d5db;
+	border-radius: 10px;
+	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+	overflow: hidden;
+}
+
+.combobox-search {
+	width: 100%;
+	padding: 10px 14px;
+	border: none;
+	border-bottom: 1px solid #e2e8f0;
+	font-family: inherit;
+	font-size: 14px;
+	outline: none;
+}
+
+.combobox-search:focus {
+	box-shadow: inset 0 -2px 0 #4a90d9;
+}
+
+.combobox-list {
+	max-height: 280px;
+	overflow-y: auto;
+}
+
+.combobox-option {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	padding: 10px 14px;
+	border: none;
+	background: #ffffff;
+	font-family: inherit;
+	font-size: 14px;
+	text-align: left;
+	cursor: pointer;
+}
+
+.combobox-option:hover,
+.combobox-option.highlighted {
+	background: #eff6ff;
+}
+
+.combobox-option.selected .option-name {
+	color: #4a90d9;
+	font-weight: 600;
+}
+
+.combobox-option .option-price {
+	font-weight: 600;
+	color: #4a90d9;
+	white-space: nowrap;
+	min-width: 90px;
+	flex-shrink: 0;
+}
+
+.combobox-option .option-name {
+	color: #1e293b;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* ===== Позиции из резерва («В резерве» в прайсе поставщика 2) ===== */
+.combobox-option.reserved {
+	background: #fff7ed;
+}
+
+.combobox-option.reserved:hover,
+.combobox-option.reserved.highlighted {
+	background: #ffedd5;
+}
+
+.combobox-option.reserved .option-name {
+	color: #c2410c;
+}
+
+.reserved-badge {
+	flex-shrink: 0;
+	margin-left: auto;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1;
+	color: #b45309;
+	background: #fef3c7;
+	border: 1px solid #fcd34d;
+	border-radius: 6px;
+	padding: 3px 6px;
+}
+
+/* ===== Пометка о встроенном видеоядре процессора ===== */
+.igpu-badge {
+	flex-shrink: 0;
+	margin-left: auto;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1;
+	border-radius: 999px;
+	padding: 3px 8px;
+	white-space: nowrap;
+}
+
+.igpu-yes {
+	color: #166534;
+	background: #dcfce7;
+	border: 1px solid #86efac;
+}
+
+.igpu-no {
+	color: #9a3412;
+	background: #ffedd5;
+	border: 1px solid #fdba74;
+}
+
+.combobox-toggle.reserved {
+	border-color: #f59e0b;
+	background: #fffbeb;
+}
+
+.combobox-toggle.reserved .toggle-name {
+	color: #c2410c;
+}
+
+.combobox-option-disabled {
+	color: #94a3b8;
+	font-style: italic;
+	cursor: default;
+}
+
+.combobox-option-disabled:hover,
+.combobox-option-disabled.highlighted {
+	background: #ffffff;
+}
+
+.combobox-empty {
+	padding: 12px 14px;
+	color: #94a3b8;
+	font-style: italic;
+	font-size: 14px;
+}
+
+/* ===== Панель загрузки прайса и основных действий (закреплена сверху) ===== */
+.toolbar {
+	position: sticky;
+	top: 0;
+	z-index: 40;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin: 0 -40px 24px;
+	padding: 12px 40px 14px;
+	background: rgba(255, 255, 255, 0.96);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	border-bottom: 1px solid #e2e8f0;
+}
+
+.toolbar-row {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px;
+}
+
+/* Основные кнопки в верхней панели — компактнее, чтобы всё помещалось в строку */
+.toolbar .btn {
+	padding: 9px 16px;
+	font-size: 14px;
+	border-radius: 8px;
+}
+
+.load-status {
+	font-size: 13px;
+	color: #94a3b8;
+	font-style: italic;
+}
+
+.load-status.ok {
+	color: #16a34a;
+	font-style: normal;
+	font-weight: 500;
+}
+
+.load-status.error {
+	color: #dc2626;
+	font-style: normal;
+}
+
+/* Чек-бокс «Резервы» */
+.reserve-check {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 14px;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	background: #f8fafc;
+	font-size: 14px;
+	color: #475569;
+	cursor: pointer;
+	user-select: none;
+	transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.reserve-check:hover {
+	border-color: #f59e0b;
+}
+
+.reserve-check input[type="checkbox"] {
+	width: 16px;
+	height: 16px;
+	accent-color: #f59e0b;
+	cursor: pointer;
+}
+
+/* Поле «Наценка» */
+.markup-field {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 14px;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	background: #f8fafc;
+	font-size: 14px;
+	color: #475569;
+	cursor: pointer;
+	user-select: none;
+	transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.markup-field:hover {
+	border-color: #4a90d9;
+}
+
+.markup-field input[type="number"] {
+	width: 72px;
+	padding: 4px 8px;
+	border: 1px solid #cbd5e1;
+	border-radius: 6px;
+	font-size: 14px;
+	color: #1e293b;
+	background: #ffffff;
+	outline: none;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.markup-field input[type="number"]:focus {
+	border-color: #4a90d9;
+	box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
+}
+
+/* Блок «Итого» (сверху и в панели действий) */
+.total-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 14px;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	background: #f8fafc;
+	font-size: 14px;
+	color: #475569;
+	user-select: none;
+	white-space: nowrap;
+}
+
+.total-badge strong {
+	color: #16a34a;
+	font-size: 16px;
+	font-weight: 700;
+}
+
+/* Сумма с наценкой — выделена цветом, в скобках после базового итога */
+.total-badge .total-base {
+	color: #16a34a;
+	font-size: 16px;
+	font-weight: 700;
+}
+
+.total-badge .total-markup {
+	color: #b45309;
+	font-size: 15px;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.actions .total-badge {
+	margin-left: auto;
+}
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-bottom: 32px;
+}
+
+/* Кнопки */
+.btn {
+	padding: 12px 24px;
+	border: none;
+	border-radius: 10px;
+	font-size: 15px;
+	font-weight: 500;
+	color: #ffffff;
+	cursor: pointer;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.btn:hover {
+	transform: translateY(-2px);
+	filter: brightness(1.08);
+}
+
+.btn:active {
+	transform: translateY(0);
+}
+
+.btn-primary {
+	background: #4a90d9;
+	box-shadow: 0 4px 12px rgba(74, 144, 217, 0.3);
+}
+
+.btn-file {
+	background: #4a90d9;
+	box-shadow: 0 4px 12px rgba(74, 144, 217, 0.3);
+}
+
+.btn-success {
+	background: #22c55e;
+	box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.btn-secondary {
+	background: #6b7280;
+	box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+}
+
+/* ===== Панель результатов ===== */
+.results-panel {
+	background: #f1f5f9;
+	border: 2px dashed #94a3b8;
+	border-radius: 12px;
+	padding: 24px;
+	min-height: 140px;
+}
+
+.results-panel h2 {
+	font-size: 18px;
+	font-weight: 600;
+	color: #334155;
+	margin-bottom: 12px;
+}
+
+.results-panel p {
+	color: #64748b;
+	font-size: 14px;
+}
+
+.results-placeholder {
+	color: #94a3b8;
+	font-style: italic;
+}
+
+.results-list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.result-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 12px;
+	background: #ffffff;
+	border-radius: 8px;
+	font-size: 14px;
+}
+
+.result-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	flex: 0 0 22px;
+	color: #64748b;
+}
+
+.result-icon svg {
+	width: 16px;
+	height: 16px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.5;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.result-name {
+	flex: 1;
+	color: #334155;
+}
+
+.result-name.not-selected {
+	color: #94a3b8;
+	font-style: italic;
+}
+
+.result-name.reserved {
+	color: #c2410c;
+}
+
+.result-price {
+	font-weight: 600;
+	color: #1e293b;
+	white-space: nowrap;
+}
+
+.result-total {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 10px;
+	padding-top: 14px;
+	border-top: 1px solid #cbd5e1;
+	font-size: 16px;
+	font-weight: 600;
+	color: #1e293b;
+}
+
+.result-total span:last-child {
+	color: #16a34a;
+	font-size: 24px;
+}
+
+.result-total-markup {
+	margin-top: 2px;
+	padding-top: 8px;
+	border-top: none;
+	font-size: 14px;
+	font-weight: 500;
+	color: #64748b;
+}
+
+.result-total-markup span:last-child {
+	color: #b45309;
+	font-size: 20px;
+	font-weight: 700;
+}
+
+.results-counter {
+	font-size: 13px;
+	font-weight: 500;
+	color: #64748b;
+	margin-bottom: 12px;
+}
+
+/* Ненавязчивое предупреждение о неполной сборке */
+.results-warning {
+	font-size: 13px;
+	color: #b45309;
+	background: #fef3c7;
+	border: 1px solid #fde68a;
+	border-radius: 8px;
+	padding: 8px 12px;
+	margin-bottom: 12px;
+}
+
+/* Предупреждения о несовместимости («слепые зоны»: корпус/GPU/кулер/СЖО) */
+.results-compat {
+	font-size: 13px;
+	color: #b91c1c;
+	background: #fee2e2;
+	border: 1px solid #fecaca;
+	border-radius: 8px;
+	padding: 8px 12px;
+	margin-bottom: 12px;
+}
+
+/* ===== Адаптивность (мобильные устройства) ===== */
+@media (max-width: 640px) {
+	.container {
+		padding: 24px;
+	}
+
+	.toolbar {
+		margin: 0 -24px 24px;
+		padding: 12px 24px 14px;
+	}
+
+	.config-grid {
+		gap: 14px;
+	}
+
+	.toolbar-actions,
+	.toolbar-controls {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.toolbar-actions .btn,
+	.toolbar-actions .total-badge,
+	.toolbar-controls .btn,
+	.toolbar-controls .reserve-check,
+	.toolbar-controls .markup-field {
+		width: 100%;
+		justify-content: center;
+	}
+
+	.btn {
+		width: 100%;
+	}
+}
+
+/* ===== Печатная версия сборки (для выгрузки в PDF) ===== */
+#print-area {
+	display: none;
+}
+
+@media print {
+	/* Скрываем всю страницу, кроме области печати */
+	body > *:not(#print-area) {
+		display: none !important;
+	}
+
+	#print-area {
+		display: block;
+		font-family: "Segoe UI", Arial, sans-serif;
+		color: #000;
+		padding: 16px;
+	}
+
+	#print-area h1 {
+		font-size: 20px;
+		margin: 0 0 8px;
+	}
+
+	#print-area .print-date {
+		margin: 0 0 16px;
+		color: #444;
+		font-size: 13px;
+	}
+
+	#print-area table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 12px;
+	}
+
+	#print-area th,
+	#print-area td {
+		border: 1px solid #999;
+		padding: 5px 8px;
+		text-align: left;
+		vertical-align: top;
+	}
+
+	#print-area th {
+		background: #ddebf7;
+	}
+
+	#print-area td.num {
+		text-align: right;
+		white-space: nowrap;
+	}
+
+	#print-area tfoot td {
+		font-weight: bold;
+		background: #f2f2f2;
+	}
+
+	#print-area .print-total {
+		margin-top: 16px;
+		text-align: right;
+		font-size: 16px;
+	}
+
+	#print-area .print-total strong {
+		font-size: 20px;
+	}
+}
