@@ -1275,9 +1275,15 @@ class Combobox {
 			if (!btn || btn.disabled) return;
 			this.selectByValue(btn.dataset.value);
 		});
-		// Закрытие по клику вне комбобокса (клик внутри меню/поиска меню не закрывает)
+		// Закрытие по клику вне комбобокса (клик внутри меню/поиска меню не закрывает).
+		// Клик по полосе прокрутки страницы (координаты за пределами клиентской области)
+		// считается прокруткой, а не «кликом в стороне» — меню не закрываем.
 		document.addEventListener("click", e => {
-			if (!this.root.contains(e.target)) this.close();
+			if (!this.root.contains(e.target) &&
+				e.clientX < document.documentElement.clientWidth &&
+				e.clientY < document.documentElement.clientHeight) {
+				this.close();
+			}
 		});
 	}
 
@@ -1770,6 +1776,161 @@ function updateTotalBadges(total, markupTotal) {
 	if (markup) markup.textContent = total == null ? "" : "(" + formatPrice(markupTotal) + ")";
 }
 
+// ===== Сохранённые сборки (до 4 шт., в рамках сеанса) =====
+// savedBuilds[i] = { name, selections, cpuLabel, componentCount, total } | null
+const MAX_SAVED_BUILDS = 4;
+const savedBuilds = new Array(MAX_SAVED_BUILDS).fill(null);
+
+// Текущий выбор компонентов как сериализуемое состояние { категория: { name, qty } }
+function collectSelections() {
+	const selections = {};
+	componentConfig.forEach(item => {
+		const sel = comboboxes[item.selectId].getSelectedItem();
+		if (sel) {
+			selections[item.selectId] = {
+				name: sel.name,
+				qty: quantities[item.selectId] || 1
+			};
+		}
+	});
+	return selections;
+}
+
+// Сохранение текущей сборки в первый свободный слот
+function saveBuild() {
+	const selections = collectSelections();
+	const selectedCount = Object.keys(selections).length;
+	if (selectedCount === 0) {
+		alert("Сначала соберите сборку — выберите хотя бы один компонент.");
+		return;
+	}
+
+	let idx = savedBuilds.findIndex(b => b === null);
+	if (idx === -1) {
+		if (savedBuilds.length >= MAX_SAVED_BUILDS) {
+			alert("Достигнут максимум сохранённых сборок (4). Удалите одну из сохранённых сборок.");
+			return;
+		}
+		idx = savedBuilds.length;
+	}
+
+	const cpuSel = selections.cpu ? comboboxes["cpu"].getSelectedItem() : null;
+	const cpuLabel = cpuSel ? itemDisplayName(cpuSel) : "Без процессора";
+
+	let total = 0;
+	componentConfig.forEach(item => {
+		const s = selections[item.selectId];
+		if (!s) return;
+		const sel = comboboxes[item.selectId].getSelectedItem();
+		total += sel.price * s.qty;
+	});
+
+	savedBuilds[idx] = {
+		name: "Сборка " + (idx + 1),
+		selections,
+		cpuLabel,
+		componentCount: selectedCount,
+		total: Math.round(total * 100) / 100
+	};
+	renderSavedBuilds();
+}
+
+// Возврат сохранённой сборки в конфигуратор
+function loadBuild(index) {
+	const build = savedBuilds[index];
+	if (!build) return;
+
+	// Начинаем с чистого конфигуратора (сброс возвращает полный каталог)
+	resetAll();
+
+	// Порядок важен: CPU → плата → память → накопители → GPU → БП → кулер → корпус,
+	// чтобы списки совместимости перестроились раньше, чем восстановится выбор
+	const order = ["cpu", "motherboard", "ram", "ssd", "gpu", "psu", "cooler", "hdd", "case"];
+	const missing = [];
+	order.forEach(cat => {
+		const sel = build.selections[cat];
+		if (!sel) return;
+		// Количество (для RAM/SSD) восстанавливаем до выбора компонента,
+		// чтобы в кнопке сразу отобразилась итоговая цена с множителем
+		if (quantities[cat] !== undefined) {
+			quantities[cat] = sel.qty || 1;
+			const qtyEl = document.getElementById("qty-" + cat);
+			if (qtyEl) qtyEl.value = String(quantities[cat]);
+		}
+		if (comboboxes[cat].items.some(i => i.name === sel.name)) {
+			comboboxes[cat].selectByValue(sel.name);
+		} else {
+			missing.push(cat);
+		}
+	});
+	calculate();
+
+	if (missing.length > 0) {
+		alert("Сборка загружена, но не найдены в текущем прайсе: " +
+			missing.join(", ") + ". Проверьте список компонентов.");
+	}
+}
+
+// Удаление сохранённой сборки из слота
+function deleteBuild(index) {
+	if (!savedBuilds[index]) return;
+	savedBuilds[index] = null;
+	renderSavedBuilds();
+}
+
+// Перерисовка панели сохранённых сборок.
+// Показываем только занятые слоты — пустые не занимают место,
+// их наличие отражено в счётчике шапки (например «Сборки (2/4)»).
+function renderSavedBuilds() {
+	const panel = document.getElementById("saved-builds-panel");
+	const grid = document.getElementById("saved-builds-grid");
+	const countEl = document.getElementById("saved-count");
+	const savedCount = savedBuilds.filter(b => b !== null).length;
+
+	panel.hidden = savedCount === 0;
+	countEl.textContent = "(" + savedCount + "/" + MAX_SAVED_BUILDS + ")";
+	grid.innerHTML = "";
+
+	for (let i = 0; i < MAX_SAVED_BUILDS; i++) {
+		const b = savedBuilds[i];
+		if (!b) continue; // свободный слот — не рисуем
+
+		const card = document.createElement("div");
+		card.className = "saved-build-card filled";
+
+		const header = document.createElement("div");
+		header.className = "saved-build-header";
+		const name = document.createElement("strong");
+		name.textContent = b.name;
+		const del = document.createElement("button");
+		del.type = "button";
+		del.className = "saved-build-delete";
+		del.title = "Удалить " + b.name;
+		del.textContent = "✕";
+		del.addEventListener("click", () => deleteBuild(i));
+		header.append(name, del);
+
+		const summary = document.createElement("div");
+		summary.className = "saved-build-summary";
+		summary.textContent = b.cpuLabel + " · компонентов: " + b.componentCount;
+
+		const total = document.createElement("div");
+		total.className = "saved-build-total";
+		total.textContent = "Итого: " + formatPrice(b.total) +
+			" · с наценкой: " + formatPrice(clientPrice(b.total, getMarkupPercent()));
+
+		const loadBtn = document.createElement("button");
+		loadBtn.type = "button";
+		loadBtn.className = "btn btn-load-build";
+		loadBtn.textContent = "Загрузить";
+		loadBtn.title = "Вернуть параметры этой сборки в конфигуратор";
+		loadBtn.addEventListener("click", () => loadBuild(i));
+
+		card.append(header, summary, total, loadBtn);
+		grid.appendChild(card);
+	}
+}
+
 // ===== Обработка загруженного прайс-листа (XLS / XLSX) =====
 function handlePriceFile(event) {
 	const file = event.target.files[0];
@@ -2007,10 +2168,40 @@ function exportExcel() {
 }
 
 // ===== Назначение обработчиков =====
-document.getElementById("btn-calculate").addEventListener("click", calculate);
-document.getElementById("btn-export-client").addEventListener("click", exportClient);
+document.getElementById("btn-calculate").addEventListener("click", calculate);document.getElementById("btn-export-client").addEventListener("click", exportClient);
 document.getElementById("btn-export-xls").addEventListener("click", exportExcel);
 document.getElementById("btn-reset").addEventListener("click", resetAll);
+
+// Кнопка «Сохранить сборку» — сохраняет текущий выбор в слот сохранённых сборок
+if (document.getElementById("btn-save-build")) {
+	document.getElementById("btn-save-build").addEventListener("click", saveBuild);
+}
+
+// ===== Прокрутка колесом при открытом выпадающем списке =====
+// Пока открыто меню комбобокса, колесо мыши листает список компонентов,
+// а не всю страницу: иначе при прокрутке «вне списка» (курсор не над списком)
+// страница уезжает, а открытое меню уходит из виду — выглядит как будто
+// «меню закрылось и вся страница прокрутилась». Когда список дошёл до
+// границы, прокрутку на страницу всё равно не «перекидываем».
+document.addEventListener("wheel", e => {
+	const openMenu = [...document.querySelectorAll(".combobox-menu")].find(m => !m.hidden);
+	if (!openMenu) return;
+	const list = openMenu.querySelector(".combobox-list");
+	if (!list || list.scrollHeight <= list.clientHeight) return;
+
+	if (openMenu.contains(e.target)) {
+		// Курсор внутри меню: список прокручивается сам, но не даём прокрутке
+		// «перекинуться» на страницу, когда список дошёл до границы
+		const atTop = list.scrollTop <= 0 && e.deltaY < 0;
+		const atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 1 && e.deltaY > 0;
+		if (atTop || atBottom) e.preventDefault();
+		return;
+	}
+
+	// Курсор вне меню: прокручиваем список вместо страницы
+	e.preventDefault();
+	list.scrollTop += e.deltaY;
+}, { passive: false });
 
 // Изменение наценки пересчитывает сумму «С наценкой»
 document.getElementById("markup-percent").addEventListener("input", calculate);

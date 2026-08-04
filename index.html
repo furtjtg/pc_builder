@@ -31,6 +31,7 @@
 			</div>
 			<div class="toolbar-row toolbar-actions">
 				<button class="btn btn-primary" id="btn-calculate">Рассчитать</button>
+				<button class="btn btn-save" id="btn-save-build" title="Сохранить текущую сборку в один из слотов (до 4) для возврата в конфигуратор">💾 Сохранить сборку</button>
 				<div class="total-badge" id="total-actions" title="Итоговая сумма сборки и сумма с наценкой">
 					<span>Итого (с наценкой):</span>
 					<strong class="total-base">0 ₽</strong>
@@ -51,6 +52,12 @@
 					<span>%</span>
 				</label>
 			</div>
+		</div>
+
+		<div class="saved-builds-panel" id="saved-builds-panel" hidden>
+			<h2>Сохранённые сборки <span class="saved-count" id="saved-count"></span></h2>
+			<p class="saved-builds-hint">Сборки хранятся в памяти до обновления страницы. Нажмите «Загрузить», чтобы вернуть параметры в конфигуратор.</p>
+			<div class="saved-builds-grid" id="saved-builds-grid"></div>
 		</div>
 
 		<div class="config-grid">
