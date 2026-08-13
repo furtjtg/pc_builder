@@ -1296,9 +1296,26 @@ class Combobox {
 		this.filter = "";
 		this.highlightedIndex = 0;
 		this.renderOptions();
+
+		// Если под кнопкой меньше места, чем сверху — раскрываем список вверх,
+		// чтобы меню не уходило за нижнюю границу экрана
+		const rect = this.toggle.getBoundingClientRect();
+		const spaceBelow = window.innerHeight - rect.bottom;
+		const spaceAbove = rect.top;
+		const estMenuHeight = this.estimateMenuHeight();
+		this.menu.classList.toggle("open-up", spaceBelow < estMenuHeight && spaceAbove > spaceBelow);
+
 		this.menu.hidden = false;
 		this.toggle.setAttribute("aria-expanded", "true");
+		this.toggle.scrollIntoView({ block: "nearest" });
 		this.search.focus();
+	}
+
+	// Оценка высоты раскрытого меню: поле поиска + видимая часть списка
+	estimateMenuHeight() {
+		const listMax = parseInt(getComputedStyle(this.list).maxHeight, 10) || 280;
+		const count = this.filteredItems.length || 1;
+		return Math.min(listMax, count * 44) + 52;
 	}
 
 	close() {
@@ -2178,11 +2195,10 @@ if (document.getElementById("btn-save-build")) {
 }
 
 // ===== Прокрутка колесом при открытом выпадающем списке =====
-// Пока открыто меню комбобокса, колесо мыши листает список компонентов,
-// а не всю страницу: иначе при прокрутке «вне списка» (курсор не над списком)
-// страница уезжает, а открытое меню уходит из виду — выглядит как будто
-// «меню закрылось и вся страница прокрутилась». Когда список дошёл до
-// границы, прокрутку на страницу всё равно не «перекидываем».
+// Пока открыто меню комбобокса, колесо мыши прокручивает список компонентов,
+// а не всю страницу, ТОЛЬКО когда курсор находится внутри меню. Это позволяет
+// листать длинный список, не «утаскивая» страницу. Если курсор вне меню —
+// страница прокручивается как обычно (открытое меню не мешает прокрутке).
 document.addEventListener("wheel", e => {
 	const openMenu = [...document.querySelectorAll(".combobox-menu")].find(m => !m.hidden);
 	if (!openMenu) return;
@@ -2198,9 +2214,7 @@ document.addEventListener("wheel", e => {
 		return;
 	}
 
-	// Курсор вне меню: прокручиваем список вместо страницы
-	e.preventDefault();
-	list.scrollTop += e.deltaY;
+	// Курсор вне меню — страница прокручивается как обычно, меню остаётся открытым
 }, { passive: false });
 
 // Изменение наценки пересчитывает сумму «С наценкой»

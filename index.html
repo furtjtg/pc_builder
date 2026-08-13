@@ -23,6 +23,8 @@
 		<h1>Конфигуратор ПК</h1>
 		<p>Выберите компоненты для сборки системного блока</p>
 
+		<div class="layout">
+			<aside class="sidebar">
 		<div class="toolbar">
 			<div class="toolbar-row">
 				<input type="file" id="price-file-input" accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
@@ -58,9 +60,10 @@
 			<h2>Сохранённые сборки <span class="saved-count" id="saved-count"></span></h2>
 			<p class="saved-builds-hint">Сборки хранятся в памяти до обновления страницы. Нажмите «Загрузить», чтобы вернуть параметры в конфигуратор.</p>
 			<div class="saved-builds-grid" id="saved-builds-grid"></div>
-		</div>
+			</div>
+			</aside>
 
-		<div class="config-grid">
+			<div class="config-grid">
 			<div class="field">
 				<label for="cpu"><svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-cpu"/></svg> Процессор (CPU)</label>
 				<div class="combobox" data-category="cpu">
@@ -219,6 +222,7 @@
 			</div>
 		</div>
 
+			<div class="results-column">
 		<div class="results-panel">
 			<h2>Результаты</h2>
 			<p id="results-placeholder" class="results-placeholder">Выберите комплектующие и нажмите «Рассчитать»</p>
@@ -272,6 +276,8 @@
 					<span class="result-price" id="result-case-price">—</span>
 				</div>
 			</div>
+			</div>
+		</div>
 		</div>
 	</div>
 

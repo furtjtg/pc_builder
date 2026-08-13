@@ -19,11 +19,30 @@ body {
 /* ===== Контейнер ===== */
 .container {
 	width: 100%;
-	max-width: 860px;
+	max-width: 1400px;
 	background: #ffffff;
 	border-radius: 16px;
 	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 	padding: 40px;
+}
+
+/* ===== Три колонки: панель управления / выбор комплектующих / результаты ===== */
+.layout {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 24px;
+	align-items: start;
+}
+
+.sidebar {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	min-width: 0;
+}
+
+.results-column {
+	min-width: 0;
 }
 
 /* ===== Заголовок ===== */
@@ -44,8 +63,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
-	margin-bottom: 32px;
-	max-width: 640px;
+	min-width: 0;
 }
 
 .field {
@@ -195,13 +213,21 @@ body {
 	position: absolute;
 	top: calc(100% + 6px);
 	left: 0;
-	right: 0;
+	right: auto;
+	min-width: 100%;
+	max-width: calc(100vw - 24px);
 	z-index: 50;
 	background: #ffffff;
 	border: 1px solid #d1d5db;
 	border-radius: 10px;
 	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 	overflow: hidden;
+}
+
+/* Если под кнопкой мало места — открываем список вверх */
+.combobox-menu.open-up {
+	top: auto;
+	bottom: calc(100% + 6px);
 }
 
 .combobox-search {
@@ -225,7 +251,7 @@ body {
 
 .combobox-option {
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	gap: 12px;
 	width: 100%;
 	padding: 10px 14px;
@@ -257,9 +283,11 @@ body {
 
 .combobox-option .option-name {
 	color: #1e293b;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+	flex: 1;
+	min-width: 0;
+	line-height: 1.35;
+	white-space: normal;
+	overflow-wrap: anywhere;
 }
 
 /* ===== Позиции из резерва («В резерве» в прайсе поставщика 2) ===== */
@@ -340,20 +368,16 @@ body {
 	font-size: 14px;
 }
 
-/* ===== Панель загрузки прайса и основных действий (закреплена сверху) ===== */
+/* ===== Панель загрузки прайса и основных действий (в левой колонке) ===== */
 .toolbar {
-	position: sticky;
-	top: 0;
-	z-index: 40;
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
-	margin: 0 -40px 24px;
-	padding: 12px 40px 14px;
-	background: rgba(255, 255, 255, 0.96);
-	backdrop-filter: blur(6px);
-	-webkit-backdrop-filter: blur(6px);
-	border-bottom: 1px solid #e2e8f0;
+	gap: 12px;
+	padding: 16px;
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 12px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .toolbar-row {
@@ -544,7 +568,6 @@ body {
 
 /* ===== Сохранённые сборки (до 4 шт., в рамках сеанса) ===== */
 .saved-builds-panel {
-	margin: 0 0 20px;
 	padding: 12px 16px;
 	background: #f0fdf4;
 	border: 1px solid #bbf7d0;
@@ -789,6 +812,46 @@ body {
 	margin-bottom: 12px;
 }
 
+/* ===== Широкие экраны: три колонки (панель / выбор / результаты) ===== */
+@media (min-width: 1100px) {
+	.layout {
+		grid-template-columns: 280px minmax(0, 1fr) 340px;
+	}
+
+	/* Панель управления остаётся видимой при прокрутке страницы */
+	.sidebar {
+		position: sticky;
+		top: 16px;
+		max-height: calc(100vh - 32px);
+		overflow-y: auto;
+		overscroll-behavior: contain;
+	}
+
+	.sidebar .toolbar-row {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.sidebar .toolbar .btn,
+	.sidebar .total-badge,
+	.sidebar .reserve-check,
+	.sidebar .markup-field {
+		width: 100%;
+		justify-content: center;
+	}
+
+	.sidebar .total-badge {
+		flex-wrap: wrap;
+		white-space: normal;
+	}
+
+	/* Выпадающие списки — шире поля, чтобы помещались длинные названия */
+	.combobox-menu {
+		min-width: 560px;
+		max-width: min(760px, calc(100vw - 24px));
+	}
+}
+
 /* ===== Компактный вид для небольших окон браузера =====
    (800×600 и выше; мобильные устройства ≤640px не затрагиваются) */
 @media (min-width: 641px) and (max-width: 1024px) {
@@ -810,11 +873,10 @@ body {
 		margin-bottom: 20px;
 	}
 
-	/* Toolbar: согласуем отрицательные отступы с padding контейнера,
-	   чтобы липкая панель не вылезала за экран */
+	/* Toolbar — карточка в левой колонке (в этом диапазоне колонка одна) */
 	.toolbar {
-		margin: 0 -24px 18px;
-		padding: 10px 24px 12px;
+		padding: 12px;
+		gap: 8px;
 	}
 
 	.toolbar-row {
@@ -853,8 +915,7 @@ body {
 	}
 
 	.config-grid {
-		max-width: 100%;
-		margin-bottom: 24px;
+		margin-bottom: 0;
 	}
 
 	.combobox-toggle {
@@ -945,8 +1006,7 @@ body {
 	}
 
 	.toolbar {
-		margin: 0 -24px 24px;
-		padding: 12px 24px 14px;
+		padding: 14px;
 	}
 
 	.config-grid {
