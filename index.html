@@ -28,12 +28,12 @@
 		<div class="toolbar">
 			<div class="toolbar-row">
 				<input type="file" id="price-file-input" accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
-				<button class="btn btn-file" id="btn-load-price">📂 Загрузить прайс-лист (XLS/XLSX)</button>
+				<button class="btn btn-file" id="btn-load-price">📂 Прайс</button>
 				<span id="load-status" class="load-status">Прайс ещё не загружен</span>
 			</div>
 			<div class="toolbar-row toolbar-actions">
 				<button class="btn btn-primary" id="btn-calculate">Рассчитать</button>
-				<button class="btn btn-save" id="btn-save-build" title="Сохранить текущую сборку в один из слотов (до 4) для возврата в конфигуратор">💾 Сохранить сборку</button>
+				<button class="btn btn-save" id="btn-save-build" title="Сохранить текущую сборку в один из слотов (до 4) для возврата в конфигуратор">💾 Сохранить</button>
 				<div class="total-badge" id="total-actions" title="Итоговая сумма сборки и сумма с наценкой">
 					<span>Итого (с наценкой):</span>
 					<strong class="total-base">0 ₽</strong>
@@ -42,8 +42,8 @@
 				<button class="btn btn-secondary" id="btn-reset">Сбросить</button>
 			</div>
 			<div class="toolbar-row toolbar-controls">
-				<button class="btn btn-secondary" id="btn-export-client">🧾 Для клиента</button>
-				<button class="btn btn-secondary" id="btn-export-xls">📊 Выгрузить Excel</button>
+				<button class="btn btn-secondary" id="btn-export-client" title="Распечатать смету для клиента">🧾 Клиент</button>
+				<button class="btn btn-secondary" id="btn-export-xls" title="Выгрузить заказ поставщику в Excel">📊 Excel</button>
 				<label class="reserve-check" title="Показывать позиции, находящиеся в резерве">
 					<input type="checkbox" id="show-reserves">
 					<span>Резервы</span>
